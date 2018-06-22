@@ -1,0 +1,1 @@
+{"class":"org.apache.spark.ml.feature.IndexToString","timestamp":1529700596193,"sparkVersion":"2.3.0","uid":"idxToStr_26d14c8afb92","paramMap":{"inputCol":"prediction","outputCol":"predictionLabel","labels":["others","working","sleeping"]}}

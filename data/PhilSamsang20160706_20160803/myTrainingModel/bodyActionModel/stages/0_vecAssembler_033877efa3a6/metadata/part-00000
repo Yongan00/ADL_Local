@@ -1,0 +1,1 @@
+{"class":"org.apache.spark.ml.feature.VectorAssembler","timestamp":1529704932637,"sparkVersion":"2.3.0","uid":"vecAssembler_033877efa3a6","paramMap":{"inputCols":["xAcce","yAcce","zAccr","moving","accel","azimuth","pitch","roll"],"outputCol":"bodyActionFeatures"}}

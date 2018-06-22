@@ -1,0 +1,1 @@
+{"class":"org.apache.spark.ml.feature.VectorIndexerModel","timestamp":1529700592396,"sparkVersion":"2.3.0","uid":"vecIdx_daa2e9e54123","paramMap":{"outputCol":"indexedWOSFeatures","maxCategories":2,"handleInvalid":"error","inputCol":"workOrSleepFeatures"}}

@@ -1,0 +1,27 @@
+CREATE TABLE tmpData(
+id INT primary key auto_increment,
+light float,
+xAcce float,
+yAcce float,
+zAccr float,
+angle float,
+azimuth float,
+pitch float,
+roll float,
+latitude float,
+longitude float,
+altitude float,
+hour float,
+moving float,
+turning float,
+lightChanging float,
+dark float,
+accel float,
+chargingStatus float,
+screenOn float,
+earPlug float, 
+actionLabel char(15),
+username char(20),
+timeStamp datetime)
+
+

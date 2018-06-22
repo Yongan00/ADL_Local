@@ -1,0 +1,1 @@
+{"class":"org.apache.spark.ml.feature.VectorAssembler","timestamp":1529700595115,"sparkVersion":"2.3.0","uid":"vecAssembler_7495a14cfcbe","paramMap":{"outputCol":"workOrSleepFeatures","inputCols":["light","hour","moving","turning","screenOn","earPlug","indexedActionLabel"]}}
