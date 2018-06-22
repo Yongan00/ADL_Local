@@ -6,6 +6,7 @@ import scala.collection.JavaConverters._
 import edu.isu.datafilter._
 import javax.json._;
 
+//The function of this scrip is adding all action label to the end of lines of data
 object TrainingDataWriter {
   def main(args: Array[String]){
         
