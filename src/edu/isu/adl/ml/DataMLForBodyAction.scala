@@ -70,11 +70,12 @@ object DataMLForBodyAction {
         .setFeaturesCol("bodyActionFeatures")
         .setLabelCol("indexedBodyAction")
         .setMaxBins(20)
+        .setPredictionCol("indexedBodyActionPredic")
         
     //Step4: Convert indexed label back from indexed number to String
     val labelConverter = new IndexToString()
-        .setInputCol("prediction")
-        .setOutputCol("predictionLabel")
+        .setInputCol("indexedBodyActionPredic")
+        .setOutputCol("bodyActionPredic")
         .setLabels(labelIndexer.labels)
         
     val pipeline = new Pipeline()
@@ -84,11 +85,11 @@ object DataMLForBodyAction {
    
     val predictions = model.transform(data)
     
-    predictions.select("predictionLabel", "bodyAction").show(10)
+    predictions.select("bodyActionPredic", "bodyAction").show(10)
         
     val evaluator = new MulticlassClassificationEvaluator()
                     .setLabelCol("indexedBodyAction")
-                    .setPredictionCol("prediction")
+                    .setPredictionCol("indexedBodyActionPredic")
                     .setMetricName("accuracy")
     val accuracy = evaluator.evaluate(predictions)
     println(s"Test Error = ${(1.0 - accuracy)}")

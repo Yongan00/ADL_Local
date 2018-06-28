@@ -12,7 +12,7 @@ import java.sql.DriverManager
 
 object DataFilter {
   
-  def filterData(userName: String, timeStamp: String, motionFolder: File, statusFolder: File){
+  def filterData(userName: String, timeStamp: String, motionFolder: File, statusFolder: File, connection:Connection){
     val statusData = new StatusDataFilter(statusFolder.getAbsolutePath + "\\" + userName + '_' + timeStamp + ".csv")
     
     //get light, xAcce, yAcce, zAccr, angle, azimuth, pitch, roll, latitude, longitude, altitude
@@ -66,15 +66,8 @@ object DataFilter {
     
     
     //write to MySQL Database through JDBC
-    val url = "jdbc:mysql://localhost:3306/adl?useSSL=false"
-    val driver = "com.mysql.cj.jdbc.Driver"
-    Class.forName(driver)
-    val dbUsername = "adlDev_yongan"
-    val dbPassword = "2375033"
-
     try{
-    val connection: Connection = DriverManager.getConnection(url, dbUsername, dbPassword)
-    val sql = "INSERT INTO adl.tmpdata(light, xAcce, yAcce, zAccr, angle, azimuth, pitch, roll, latitude, longitude, altitude, hour, moving, turning, lightChanging, dark, accel, chargingStatus, screenOn, earPlug, actionLabel, username, timeStamp) " +
+    val sql = "INSERT INTO adl.record(light, xAcce, yAcce, zAccr, angle, azimuth, pitch, roll, latitude, longitude, altitude, hour, moving, turning, lightChanging, dark, accel, chargingStatus, screenOn, earPlug, actionLabel, timeStamp, userID) " +
                                       "values(" + 
                                       basicStatusData._1 + "," +
                                       basicStatusData._2 + "," +
@@ -98,10 +91,9 @@ object DataFilter {
                                       batStatusData._3 + ",?,?,?)"
     val pStatement = connection.prepareStatement(sql)
     pStatement.setString(1, actionLabel)
-    pStatement.setString(2, userName)
-    pStatement.setTimestamp(3, sqlTimeStamp)
+    pStatement.setTimestamp(2, sqlTimeStamp)
+    pStatement.setInt(3, 0)
     pStatement.execute()
-     connection.close()
      println("successfully insert")
     }catch{
       case e: Exception => e.printStackTrace()
@@ -116,10 +108,22 @@ object DataFilter {
     val statusFolder = new File("C:\\Users\\yongan\\CCLearning\\CC\\RecognitionOfADL\\data\\PhilAmes20160706_20160829\\PhilSamsang20160706_20160803\\csv")
     val timeStamps = motionFolder.listFiles().map(x => x.getName.split('_').apply(1) + "_" + x.getName.split('_').apply(2))
     //val timeStamp = "20160706_161756"
-    val username = "PhilSamsang"
+    val username = "PhilSamsang" // userID = 0
+    
+    //Database connection setting
+    val url = "jdbc:mysql://localhost:3306/adl?useSSL=false"
+    val driver = "com.mysql.cj.jdbc.Driver"
+    Class.forName(driver)
+    val dbUsername = "adlDev_yongan"
+    val dbPassword = "2375033"
+    val connection: Connection = DriverManager.getConnection(url, dbUsername, dbPassword)
+    
+    //Check User in database
     
     for(timeStamp <- timeStamps)
-      filterData(username, timeStamp, motionFolder, statusFolder)
+      filterData(username, timeStamp, motionFolder, statusFolder, connection)
+      
+    connection.close()
   }
 
 }

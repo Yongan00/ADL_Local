@@ -13,7 +13,7 @@ object WOSClassifer {
     Logger.getLogger("org").setLevel(Level.ERROR)
     
     val url = "jdbc:mysql://localhost:3306/adl?useSSL=false"
-    val tableName = "adl.tmpdata"
+    val tableName = "adl.record"
     val dbUsername = "adlDev_yongan"
     val dbPassword = "2375033"
     
@@ -29,15 +29,16 @@ object WOSClassifer {
     //jdbcDF.printSchema()
     
     //load trained model from disk
-    val model = PipelineModel.load("C:\\Users\\yongan\\CCLearning\\CC\\RecognitionOfADL\\data\\PhilAmes20160706_20160829\\PhilSamsang20160706_20160803\\myTrainingModel\\workOrSleepModel")
-    //val model = PipelineModel.load("C:\\Users\\yongan\\CCLearning\\CC\\RecognitionOfADL\\data\\PhilAmes20160706_20160829\\PhilSamsang20160706_20160803\\myTrainingModel\\bodyActionModel")
+    val workOrSleepModel = PipelineModel.load("C:\\Users\\yongan\\CCLearning\\CC\\RecognitionOfADL\\data\\PhilAmes20160706_20160829\\PhilSamsang20160706_20160803\\myTrainingModel\\workOrSleepModel")
+    val bodyActionModel = PipelineModel.load("C:\\Users\\yongan\\CCLearning\\CC\\RecognitionOfADL\\data\\PhilAmes20160706_20160829\\PhilSamsang20160706_20160803\\myTrainingModel\\bodyActionModel")
     //val treeModel = model.stages(4).asInstanceOf[DecisionTreeClassificationModel]
     //println(s"Learned classification tree model:\n ${treeModel.toDebugString}")
-    val result = model.transform(jdbcDF)
-    //result.printSchema()
-    //result.select("id", "username", "timeStamp", "workOrSleepFeatures", "probability", "predictionLabel").show(20)
-    result.select("username", "timeStamp", "predictionLabel")
-          .write.csv("C:\\Users\\yongan\\CCLearning\\CC\\RecognitionOfADL\\data\\PhilAmes20160706_20160829\\PhilSamsang20160706_20160803\\myTrainingModel\\report2")
+    
+    val workOrSleepResult = workOrSleepModel.transform(jdbcDF).drop("indexedActionLabel","workOrSleepFeatures", "indexedWOSFeatures", "rawPrediction", "probability", "indexedWorkOrSleepPredic")
+    val finalResult = bodyActionModel.transform(workOrSleepResult)
+    //finalResult.printSchema()
+    finalResult.select("userID", "timeStamp", "workOrSleepPredic", "bodyActionPredic")
+          .write.csv("C:\\Users\\yongan\\CCLearning\\CC\\RecognitionOfADL\\data\\PhilAmes20160706_20160829\\PhilSamsang20160706_20160803\\myTrainingModel\\report")
     ss.close()
   }
 }

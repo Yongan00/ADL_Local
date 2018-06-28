@@ -4,7 +4,6 @@ import org.apache.spark.SparkContext._
 import org.apache.log4j._
 import org.apache.spark._
 import org.apache.spark.sql._
-import org.apache.spark.mllib.linalg._
 import org.apache.spark.ml.feature.VectorIndexer
 import org.apache.spark.ml.feature.StringIndexer
 import org.apache.spark.ml.feature.VectorAssembler
@@ -96,10 +95,11 @@ object DataML {
         .setFeaturesCol("indexedWOSFeatures")
         .setLabelCol("indexedWorkOrSleep")
         .setMaxBins(55)
+        .setPredictionCol("indexedWorkOrSleepPredic")
     //Step6: Convert back from indexed label number to label name
     val labelConverter = new IndexToString()
-        .setInputCol("prediction")
-        .setOutputCol("predictionLabel")
+        .setInputCol("indexedWorkOrSleepPredic")
+        .setOutputCol("workOrSleepPredic")
         .setLabels(labelIndexer.labels)
         
     //train model and test
@@ -111,11 +111,11 @@ object DataML {
    
     val predictions = model.transform(data)
     
-    predictions.select("predictionLabel", "workOrSleep").show(10)
+    predictions.select("workOrSleepPredic", "workOrSleep").show(10)
         
     val evaluator = new MulticlassClassificationEvaluator()
                     .setLabelCol("indexedWorkOrSleep")
-                    .setPredictionCol("prediction")
+                    .setPredictionCol("indexedWorkOrSleepPredic")
                     .setMetricName("accuracy")
     val accuracy = evaluator.evaluate(predictions)
     println(s"Test Error = ${(1.0 - accuracy)}")
